@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
+//Register
 export const register = async (req,res) => {
     try{
 
@@ -23,8 +24,8 @@ export const register = async (req,res) => {
         await User.create({
             fullname: fullname,
             email: email,
-            PhoneNumber: phoneNumber,
-            Password: hashedPassword,
+            phoneNumber: phoneNumber,
+            password: hashedPassword,
             role: role
         })
         return res.status(201).json({
@@ -94,14 +95,14 @@ export const login = async (req, res) => {
     }
 }
 
-export const updateProfile = async () =>{
+export const updateProfile = async (req,res) =>{
   try{
        const {fullname, email, phoneNumber, bio, skills, password} = req.body;
 
        const file = req.file;
 
        if(!fullname || !email || !phoneNumber || !bio || !skills || !password) {
-        return status(400).json({
+        return res.status(400).json({
             message: "Somthing is missing",
             success: false
         })
@@ -141,7 +142,7 @@ export const updateProfile = async () =>{
             success:true,
             user: {
                 _id: user._id,
-                fullname = user.fullname,
+                fullname : user.fullname,
                 email:user.email,
                 phoneNumber: user.phoneNumber,
                 role: user.role,
