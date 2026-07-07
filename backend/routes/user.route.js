@@ -5,7 +5,7 @@ import { singleUpload } from "../middleware/mutler.js";
 
 const router = express.Router();
 
-router.post("/register",register);
+router.post("/register",singleUpload,register);
 router.post("/login",login);
 router.get("/logout",logout);
 router.route("/profile/update").post(isAuthenticated,singleUpload,updateProfile);

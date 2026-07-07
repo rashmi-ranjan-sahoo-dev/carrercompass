@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { z } from "zod";
+import cloudnary from "../utils/cloudinary.js"
+import getDataUri from "../utils/datauri"
 
 
 dotenv.config();
@@ -46,6 +48,21 @@ export const register = async (req,res) => {
 
          const {fullName, email, phoneNumber,password, role} = req.body;
 
+         const file = req.file;
+
+         const fileUri = getDataUri(file);
+
+         const cloudResponse = await cloudnary.uploader.upload(fileUri.content);
+
+         const user = await User.findOne({ email });
+
+         if(user){
+            return res.status(400).json({
+                message: 'User already exist with this email',
+                success: false
+            })
+         }
+
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -54,7 +71,10 @@ export const register = async (req,res) => {
             phoneNumber: phoneNumber,
             email: email,
             password: hashedPassword,
-            role: role
+            role: role,
+            profile:{
+                profilePhoto : cloudResponse.secure_url,
+            }
         })
 
         return res.status(201).json({
