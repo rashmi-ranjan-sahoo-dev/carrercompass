@@ -12,8 +12,6 @@ dotenv.config();
 export const register = async (req,res) => {
     try{
 
-        // const {fullName, email, phoneNumber,password, role} = req.body;
-
         const isValid = z.object({
             fullName: z.
             string().min(3, "Full name must be at least 3 characters")
@@ -73,7 +71,7 @@ export const register = async (req,res) => {
     }
 }
 
-
+  //User login
 export const login = async (req, res) => {
     try{
 
@@ -156,7 +154,7 @@ export const login = async (req, res) => {
     }
 }
 
-   // Logout  the user 
+   // Logout user 
 
    export const logout = async (req,res) => {
         try{
@@ -175,19 +173,51 @@ export const login = async (req, res) => {
    }
 
 
+  // Update user profile
 
 export const updateProfile = async (req,res) =>{
   try{
+
+    const isValid = z.object({
+        fullName: z
+        .string()
+        .min(3, "Full name must be at least 3 characters")
+        .max(50, "Full name cannot exceed 50 characters")
+        .optional(),
+
+    email: z
+        .string()
+        .email("Please enter a valid email address")
+        .optional(),
+
+    phoneNumber: z
+        .string()
+        .regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit phone number")
+        .optional(),
+
+    bio: z
+        .string()
+        .max(300, "Bio cannot exceed 300 characters")
+        .optional(),
+
+    skills: z
+        .string()
+        .optional()
+    })
+
+    const data = isValid.safeParse(req.body);
+
+    if(!data.success){
+        return res.status(400).json({
+            message: "Validation failed",
+            errors: data.error.issues,
+            success: false
+        })
+    }
+
        const {fullname, email, phoneNumber, bio, skills, password} = req.body;
 
        const file = req.file;
-
-       if(!fullname || !email || !phoneNumber || !bio || !skills || !password) {
-        return res.status(400).json({
-            message: "Somthing is missing",
-            success: false
-        })
-       }
 
        const skillsArray = skills.split(",");
 
