@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { z } from "zod";
-import cloudnary from "../utils/cloudinary.js"
-import getDataUri from "../utils/datauri"
+import cloudinary from "../utils/cloudinary.js"
+import getDataUri from "../utils/datauri.js"
 
 
 dotenv.config();
@@ -48,11 +48,21 @@ export const register = async (req,res) => {
 
          const {fullName, email, phoneNumber,password, role} = req.body;
 
-         const file = req.file;
+         const file  = req.files?.profilePhoto?.[0];
 
-         const fileUri = getDataUri(file);
+        //  const fileUri = getDataUri(file);
 
-         const cloudResponse = await cloudnary.uploader.upload(fileUri.content);
+        let profilePhoto;
+
+        if(file){
+            const fileUri = getDataUri(file);
+
+            const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+            profilePhoto = cloudResponse.secure_url;
+        }
+
+        //  const cloudResponse = await cloudnary.uploader.upload(fileUri.content);
 
          const user = await User.findOne({ email });
 
@@ -73,7 +83,7 @@ export const register = async (req,res) => {
             password: hashedPassword,
             role: role,
             profile:{
-                profilePhoto : cloudResponse.secure_url,
+                profilePhoto 
             }
         })
 
@@ -235,13 +245,9 @@ export const updateProfile = async (req,res) =>{
         })
     }
 
-       const {fullname, email, phoneNumber, bio, skills, password} = req.body;
+       const {fullName, email, phoneNumber, bio, skills, password} = req.body;
 
-       const file = req.file;
-
-       const skillsArray = skills.split(",");
-
-       const userId = req.user.userId; // middleware authentication;
+        const userId = req.id // middleware authentication;
 
        let user = await User.findById(userId);
 
@@ -252,19 +258,41 @@ export const updateProfile = async (req,res) =>{
         })
        }
 
-       //update data
+       let skillsArray;
 
-       user.fullname = fullname;
-       user.email = email;
-       user.phoneNumber = phoneNumber;
-       user.profile.bio = bio;
-       user.profile.skills = skills;
+       if(skills){
+        skillsArray = skills.split(",");
+       }
+
+       //update data
+       if(fullName) user.fullname = fullname
+        if(email) user.email = email
+        if(phoneNumber)  user.phoneNumber = phoneNumber
+        if(bio) user.profile.bio = bio
+        if(skills) user.profile.skills = skillsArray
        if(password) {
         const hashedPassword = await bcrypt.hash(password,10);
         user.password = hashedPassword;
        }
 
-       //resume come later here..
+    const profilePhoto = req.files?.profilePhoto?.[0];
+    const resume = req.files?.resume?.[0];
+
+    // update profilePhoto here
+    if(profilePhoto){
+        const fileUri = getDataUri(profilePhoto);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+        user.profile.profilePhoto = cloudResponse.secure_url;
+    }
+
+    // update resume here
+    if(resume){
+        const fileUri = getDataUri(resume);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+        user.profile.resume = cloudResponse.secure_url;
+    }
 
        await user.save();
 
@@ -278,7 +306,6 @@ export const updateProfile = async (req,res) =>{
                 phoneNumber: user.phoneNumber,
                 role: user.role,
                 profile: user.profile
-
             }
        });
 
