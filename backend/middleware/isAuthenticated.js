@@ -26,7 +26,7 @@ export const isAuthenticated = async (req,res,next) =>{
 
       req.id = decode.userId;
 
-      console.log("User from middleware:", req.id);
+      // console.log("User from middleware:", req.id);
 
         next();
         

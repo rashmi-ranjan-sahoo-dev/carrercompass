@@ -5,5 +5,6 @@ const storage = multer.memoryStorage();
 export const upload = multer({storage})
 .fields([
     {name: "profilePhoto"},
-    {name: "resume"}
+    {name: "resume"},
+    {name: "logo"}
 ])

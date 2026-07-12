@@ -98,15 +98,16 @@ export const updateCompany = async (req, res) => {
     try {
         const { name, description, website, location} = req.body;
 
-        const file = req.file;
+        let logo = req.files?.logo?.[0];
 
         // cloudinary upload
 
-        const fileUri = getDataUri(file);
-
+        if(logo){
+        const fileUri = getDataUri(logo);
         const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
-        const logo = cloudResponse.secure_url;
+         logo = cloudResponse.secure_url;
+        }
 
         const updateData = {
             name, description, website, location, logo
@@ -122,7 +123,7 @@ export const updateCompany = async (req, res) => {
         }
 
         return res.status(200).json({
-            comapany,
+            company,
             message: "Company updated successfully",
             success: true
         })
