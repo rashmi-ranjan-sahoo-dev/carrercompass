@@ -28,6 +28,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const logoutHandler = async () => {
+    // console.log("Logout clicked");
     try {
       const res = await axios.get(
         `${USER_API_END_POINT}/logout`,
@@ -56,9 +57,9 @@ const Navbar = () => {
 
         <Link to="/">
           <h1 className="text-2xl font-bold">
-            Job
+            Career
             <span className="text-primary">
-              Portal
+              Compass
             </span>
           </h1>
         </Link>
@@ -175,11 +176,11 @@ const Navbar = () => {
 
               <PopoverContent
                 align="end"
-                className="w-72"
+                className="w-72 bg-amber-500"
               >
-                <div className="space-y-4">
+                <div className="space-y-4 ">
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 ">
 
                     <Avatar>
                       <AvatarImage
@@ -203,7 +204,7 @@ const Navbar = () => {
 
                   </div>
 
-                  <div className="border-t pt-3 space-y-2">
+                  <div className="border-t pt-3 space-y-2  ">
 
                     {user?.role === "student" && (
                       <Link
@@ -217,7 +218,7 @@ const Navbar = () => {
 
                     <button
                       onClick={logoutHandler}
-                      className="flex w-full items-center gap-3 rounded-md p-2 text-sm hover:bg-destructive/10 hover:text-destructive transition-colors"
+                      className="flex w-full items-center gap-3 rounded-md p-2 text-sm bg-red-500 hover:bg-destructive/10 hover:text-destructive transition-colors"
                     >
                       <LogOut className="size-4" />
                       Logout

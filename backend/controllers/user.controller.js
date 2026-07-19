@@ -33,7 +33,7 @@ export const register = async (req,res) => {
              .regex(/[0-9]/, "Password must contain at least one number")
              .regex(/[@$!%*?&]/, "Password must contain at least one special character"),
 
-             role: z.enum([ "user", "admin","recruiter"])
+             role: z.enum([ "student", "admin","recruiter"])
             
         })
 
@@ -117,7 +117,7 @@ export const login = async (req, res) => {
              .regex(/[0-9]/, "Password must contain at least one number")
              .regex(/[@$!%*?&]/, "Password must contain at least one special character"),
 
-             role: z.enum([ "user", "admin"])
+             role: z.enum([ "student","recruiter"])
         })
 
         const data = isValid.safeParse(req.body);
@@ -185,21 +185,26 @@ export const login = async (req, res) => {
 }
 
    // Logout user 
-export const logout = async (req,res) => {
-        try{
-            return res.status(200).cookie("token", {maxAge: 0}).json({
-                message: "Logged out successfully",
-                succsse: true
-            })
-         }catch(error) {
-            console.error("Error during logout" , error);
-            return res.status(500).json({
-                message: "Internal server error",
-                success: false
-            })
-         }
-
-   }
+export const logout = async (req, res) => {
+  try {
+    return res
+      .status(200)
+      .cookie("token", "", {
+        httpOnly: true,
+        maxAge: 0,
+      })
+      .json({
+        message: "Logged out successfully",
+        success: true,
+      });
+  } catch (error) {
+    console.error("Error during logout", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+};
 
   // Update user profile
 export const updateProfile = async (req,res) =>{

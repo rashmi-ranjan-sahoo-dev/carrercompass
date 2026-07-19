@@ -8,6 +8,8 @@ export const postJob = async (req,res) => {
         
         const userId = req.id;
 
+        console.log(req.body);
+
         const {title, description, requirements,salary, location, jobType, experienceLevel,position, companyId} = req.body;
 
         if (!title || ! description || !requirements || !salary || !location || !jobType || !experienceLevel || !position || !companyId){
@@ -27,13 +29,15 @@ export const postJob = async (req,res) => {
             jobType,
             experienceLevel,
             position,
-            companyId,
+            company: companyId,
             created_by: userId
         });
 
+        if(job) console.log("job created");
+
         return res.status(201).json({
             message: "Job posted successfully",
-            status: true,
+            success: true,
             job
         });
 
@@ -115,10 +119,15 @@ export const getJobById = async (req,res) =>{
 export const getAdminJobs = async (req, res) =>{
     try{
         const userId = req.id;
+
+        console.log( userId);
+
         const jobs = await Job.find({created_by: userId}).populate({
            path: "company",
            createdAt: -1
         })  
+
+              console.log("Jobs found:", jobs);
 
         if(!jobs){
             return res.status(404).json({
@@ -128,14 +137,14 @@ export const getAdminJobs = async (req, res) =>{
         }
         return res.status(200).json({
             message: "Jobs fetched successfully",
-            status: true,
+            success: true,
             jobs
         });
     } catch (error) {
         console.error("Error fetching jobs:", error);
         return res.status(500).json({
             message: "Internal server error",
-            status: false
+            success: false
         });
     }
 }

@@ -24,6 +24,7 @@ const useGetAllAdminJobs = () => {
           }
         );
 
+       console.log("API Response:", res.data);
         if (res.data.success) {
           dispatch(setAllAdminJobs(res.data.jobs));
         }

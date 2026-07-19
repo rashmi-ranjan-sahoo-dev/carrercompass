@@ -1,3 +1,5 @@
+
+
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -11,15 +13,14 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
-import { COMPANY_API_END_POINT } from "../../utils/contact.js";
+import { COMPANY_API_END_POINT } from "../../utils/contact";
 import useGetCompanyById from "../../hooks/useGetCompanyById";
 
 const CompanySetup = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useGetCompanyById(id);
-
-  const navigate = useNavigate();
 
   const { singleCompany } = useSelector((store) => store.company);
 
@@ -30,7 +31,7 @@ const CompanySetup = () => {
     description: "",
     website: "",
     location: "",
-    file: null,
+    logo: null,
   });
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const CompanySetup = () => {
         description: singleCompany.description || "",
         website: singleCompany.website || "",
         location: singleCompany.location || "",
-        file: null,
+        logo: null,
       });
     }
   }, [singleCompany]);
@@ -55,7 +56,7 @@ const CompanySetup = () => {
   const changeFileHandler = (e) => {
     setInput((prev) => ({
       ...prev,
-      file: e.target.files?.[0] || null,
+      logo: e.target.files?.[0] || null,
     }));
   };
 
@@ -69,8 +70,8 @@ const CompanySetup = () => {
     formData.append("website", input.website);
     formData.append("location", input.location);
 
-    if (input.file) {
-      formData.append("file", input.file);
+    if (input.logo) {
+      formData.append("logo", input.logo);
     }
 
     try {
@@ -172,6 +173,7 @@ const CompanySetup = () => {
               <Label htmlFor="logo">Company Logo</Label>
               <Input
                 id="logo"
+                name="logo"
                 type="file"
                 accept="image/*"
                 onChange={changeFileHandler}

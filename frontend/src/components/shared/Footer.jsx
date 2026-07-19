@@ -31,7 +31,7 @@ const Footer = () => {
           </p>
 
           <p className="text-sm text-muted-foreground">
-            © {year} JobPortal. All rights reserved.
+            © {year} JobPortal. All rights reserved.   
           </p>
         </div>
 

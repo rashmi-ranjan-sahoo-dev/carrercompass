@@ -25,6 +25,8 @@ const AdminJobsTable = () => {
     (store) => store.job
   );
 
+  console.log(allAdminJobs);
+
   const [filteredJobs, setFilteredJobs] = useState([]);
   const navigate = useNavigate();
 

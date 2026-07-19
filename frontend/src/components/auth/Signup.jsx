@@ -84,9 +84,9 @@ const Signup = () => {
       }
     } catch (error) {
 
-  console.log(error);
-  console.log(error.response);
-  console.log(error.response?.data);
+  // console.log(error);
+  // console.log(error.response);
+  // console.log(error.response?.data);
 
       toast.error(
         error.response?.data?.message || "Something went wrong!"
